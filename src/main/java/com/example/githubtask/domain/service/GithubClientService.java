@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 public class GithubClientService {
 
     private final GithubClientProxy githubClientProxy;
+    private final ExecutorService executorService;
 
     public List<GithubUserRepoWithBranches> fetchUserRepoWithBranches(String username) {
         List<GithubUserRepoResponseDto> userRepos = githubClientProxy.getUserRepos(username)
@@ -25,30 +26,24 @@ public class GithubClientService {
                 .filter(repo -> !repo.fork())
                 .toList();
 
-        int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors());
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        try {
-            List<CompletableFuture<GithubUserRepoWithBranches>> futures = userRepos.stream()
-                    .map(userRepo -> CompletableFuture.supplyAsync(() -> {
-                        List<GithubUserBranchResponseDto> branchesDto = githubClientProxy.getUserRepoBranches(
-                                userRepo.owner().login(), userRepo.name()
-                        );
-                        List<GithubUserRepoWithBranches.Branch> branches = getUserBranches(branchesDto);
+        return userRepos.stream()
+                .map(repository -> CompletableFuture
+                        .supplyAsync(() -> getRepoBranches(repository), executorService))
+                .map(CompletableFuture::join)
+                .toList();
+    }
 
-                        return new GithubUserRepoWithBranches(
-                                userRepo.name(),
-                                userRepo.owner().login(),
-                                branches
-                        );
-                    }, executorService))
-                    .toList();
+    private GithubUserRepoWithBranches getRepoBranches(GithubUserRepoResponseDto userRepo) {
+        List<GithubUserBranchResponseDto> branchesDto = githubClientProxy.getUserRepoBranches(
+                userRepo.owner().login(), userRepo.name()
+        );
+        List<GithubUserRepoWithBranches.Branch> branches = getUserBranches(branchesDto);
 
-            return futures.stream()
-                    .map(CompletableFuture::join)
-                    .toList();
-        } finally {
-            executorService.shutdown();
-        }
+        return new GithubUserRepoWithBranches(
+                userRepo.name(),
+                userRepo.owner().login(),
+                branches
+        );
     }
 
     private List<GithubUserRepoWithBranches.Branch> getUserBranches(List<GithubUserBranchResponseDto> branchesDto) {
