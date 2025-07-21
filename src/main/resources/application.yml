@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: GithubTask
+
+githubclient:
+  proxy:
+    url: https://api.github.com
