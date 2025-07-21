@@ -7,6 +7,7 @@ public record GithubUserBranchResponseDto(
         String name,
         CommitDto commit
 ) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record CommitDto(
             String sha
     ) {

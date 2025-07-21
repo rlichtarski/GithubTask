@@ -1,5 +1,6 @@
 package com.example.githubtask.infrastructure.client.config;
 
+import com.example.githubtask.infrastructure.client.error.GithubClientErrorDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
@@ -12,11 +13,11 @@ public class ClientConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
-//
-//    @Bean
-//    public ErrorDecoder feignErrorDecoder(JacksonDecoder decoder, ObjectMapper objectMapper) {
-//        return new GithubClientErrorDecoder(decoder, objectMapper);
-//    }
+
+    @Bean
+    public ErrorDecoder feignErrorDecoder(ObjectMapper objectMapper) {
+        return new GithubClientErrorDecoder(objectMapper);
+    }
 
 }
 

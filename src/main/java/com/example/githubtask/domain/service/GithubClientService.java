@@ -1,6 +1,7 @@
 package com.example.githubtask.domain.service;
 
 import com.example.githubtask.domain.model.GithubUserRepoWithBranches;
+import com.example.githubtask.domain.service.config.ExecutorConfig;
 import com.example.githubtask.infrastructure.client.proxy.GithubClientProxy;
 import com.example.githubtask.infrastructure.client.proxy.dto.GithubUserBranchResponseDto;
 import com.example.githubtask.infrastructure.client.proxy.dto.GithubUserRepoResponseDto;
@@ -19,8 +20,12 @@ public class GithubClientService {
     private final GithubClientProxy githubClientProxy;
 
     public List<GithubUserRepoWithBranches> fetchUserRepoWithBranches(String username) {
-        List<GithubUserRepoResponseDto> userRepos = githubClientProxy.getUserRepos(username);
-        int numberOfThreads = userRepos.size();
+        List<GithubUserRepoResponseDto> userRepos = githubClientProxy.getUserRepos(username)
+                .stream()
+                .filter(repo -> !repo.fork())
+                .toList();
+
+        int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors());
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         try {
             List<CompletableFuture<GithubUserRepoWithBranches>> futures = userRepos.stream()
@@ -48,7 +53,10 @@ public class GithubClientService {
 
     private List<GithubUserRepoWithBranches.Branch> getUserBranches(List<GithubUserBranchResponseDto> branchesDto) {
         return branchesDto.stream()
-                .map(branch -> new GithubUserRepoWithBranches.Branch(branch.name(), branch.commit().sha()))
+                .map(branch -> new GithubUserRepoWithBranches.Branch(
+                        branch.name(),
+                        branch.commit().sha()
+                ))
                 .toList();
     }
 
