@@ -1,38 +1,9 @@
 # GithubTask Spring Boot App
 
-List repos for a user ep: `/users/{username}/repos` (e.g. `https://api.github.com/users/rlichtarski/repos
-`) - [docs](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user)
+List repos for a user ep: `/users/{username}/repos` (e.g. `https://api.github.com/users/rlichtarski/repos`) - [docs](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user)
 
 List branches for the user's repo ep: `/repos/{owner}/{repo}/branches` (e.g.
 `https://api.github.com/repos/OWNER/REPO/branches`) - [docs](https://docs.github.com/en/rest/branches/branches?apiVersion=2022-11-28#list-branches)
-
-# Acceptance criteria:
-
-### FIRST:
-
-As an api consumer, given username (e.g. kalqa) and header `“Accept: application/json”`, I would like to list all his
-github repositories, which are not forks.
-
-Information, which I require in the response, is:
-
-- Repository Name
-- Owner Login
-- For each branch it’s name and last commit sha
-
-### SECOND
-
-As an api consumer, given not existing github user, I would like to receive 404 response in such a format:
-
-```json
-{
-  "status": "${responseCode}",
-  "message": "${whyHasItHappened}"
-}
-```
-
-Notes:
-Please full-fill the given acceptance criteria, delivering us your best code compliant with industry standards. Please
-use https://developer.github.com/v3 as a backing API. Application should have a proper README.md file
 
 # Documentation:
 
