@@ -39,6 +39,7 @@ public class BaseIntegrationTest {
     public static void propertyOverride(DynamicPropertyRegistry registry) {
         registry.add("githubtask.http.client.config.uri", () -> WIRE_MOCK_HOST);
         registry.add("githubtask.http.client.config.port", () -> wireMockServer.getPort());
+        registry.add("githubclient.proxy.url", () -> WIRE_MOCK_HOST + ":" + wireMockServer.getPort());
     }
 
 

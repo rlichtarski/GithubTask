@@ -3,7 +3,6 @@ package com.example.githubtask.infrastructure.client.error;
 import com.example.githubtask.domain.model.GithubUserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
-import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
 import lombok.AllArgsConstructor;
 

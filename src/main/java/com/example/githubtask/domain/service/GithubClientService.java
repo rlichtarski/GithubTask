@@ -1,7 +1,6 @@
 package com.example.githubtask.domain.service;
 
 import com.example.githubtask.domain.model.GithubUserRepoWithBranches;
-import com.example.githubtask.domain.service.config.ExecutorConfig;
 import com.example.githubtask.infrastructure.client.proxy.GithubClientProxy;
 import com.example.githubtask.infrastructure.client.proxy.dto.GithubUserBranchResponseDto;
 import com.example.githubtask.infrastructure.client.proxy.dto.GithubUserRepoResponseDto;
